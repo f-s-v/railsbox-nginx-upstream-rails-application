@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  author: Vadim Rastyagaev
+  description: Setup nginx for rails application.
+  license: BSD
+  min_ansible_version: 1.6
+  categories:
+  - development
+dependencies:
+  - {role: f-s-v.railsbox-nginx-server}

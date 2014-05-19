@@ -1,0 +1,33 @@
+upstream app {
+  server 0.0.0.0:{{ railsbox_port }};
+}
+
+server {
+  listen 80;
+  server_name {{ railsbox_domains }};
+  root /home/{{railsbox_user}}/applications/{{railsbox_application}}/current/public;
+
+  try_files $uri/index.html $uri @application;
+
+  location @application {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://app;
+    expires off;
+  }
+
+  error_page 500 502 503 504 /500.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+
+  {% if railsbox_nginx_serve_assets %}
+  location ~ ^/(assets|system|favicon|fonts|downloads)/ {
+    root /home/{{railsbox_user}}/applications/{{railsbox_application}}/current/public;
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+    break;
+  }
+  {% endif %}
+}

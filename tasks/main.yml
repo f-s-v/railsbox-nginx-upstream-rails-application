@@ -1,0 +1,5 @@
+---
+- name: Setup nginx upstream application
+  sudo: yes
+  template: src=application.conf.j2 dest=/etc/nginx/sites-enabled/{{railsbox_application}}-upstart.conf
+  notify: restart nginx
